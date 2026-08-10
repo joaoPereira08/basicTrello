@@ -1,175 +1,204 @@
+# 📝 Basic Trello
 
+Uma aplicação web estilo **Kanban/Trello**, desenvolvida como projeto de aprendizagem para explorar **Bun, Nuxt 3, FastAPI, SQLAlchemy e PostgreSQL**.
 
-📝 Documentação do Projeto: Mini-Trello 
+O principal objetivo é perceber como funciona a comunicação entre **Frontend → API → Base de Dados**, enquanto se pratica CRUD e os diferentes métodos HTTP.
 
-1. Visão Geral do Projeto
+---
 
-Uma aplicação web estilo Kanban (Trello) onde o utilizador pode criar Quadros
-(Boards), adicionar Listas (Colunas como "A Fazer", "Em Progresso", "Concluído")
-e criar Cartões (Cards/Tarefas) dentro dessas listas.
+## 🛠️ Stack
 
-Objetivo de Aprendizagem: Perceber a fundo os verbos HTTP (GET, POST, PUT,
-PATCH, DELETE) comunicando um frontend em Vue/Nuxt com uma API em
-Python/FastAPI.
+| Parte    | Tecnologia       |
+| -------- | ---------------- |
+| Frontend | Nuxt 3 / Vue     |
+| Runtime  | Bun              |
+| Backend  | FastAPI / Python |
+| ORM      | SQLAlchemy       |
+| Database | PostgreSQL       |
+| Styling  | Tailwind CSS     |
 
-2. Arquitetura da Stack
+---
 
-  - Base de Dados: PostgreSQL (A correr localmente na porta 5432).
-  - Backend: FastAPI + SQLAlchemy (ORM) (A correr na porta 8000).
-  - Frontend: Nuxt 3 gerido pelo Bun (A correr na porta 3000).
+## 🏗️ Arquitetura
 
-3. Modelação da Base de Dados (PostgreSQL)
- 
-Para um clone do Trello, precisamos de 3 tabelas principais. Vamos focar-nos
-nelas para manter tudo simples (sem sistema de login por enquanto).
+```text
+┌─────────────┐
+│   Nuxt 3    │
+│  Frontend   │
+└──────┬──────┘
+       │ HTTP / JSON
+       ▼
+┌─────────────┐
+│   FastAPI   │
+│   Backend   │
+└──────┬──────┘
+       │ SQLAlchemy
+       ▼
+┌─────────────┐
+│ PostgreSQL  │
+└─────────────┘
+```
 
-1.  Board (Quadro)
-      - id: UUID ou Integer (Chave Primária)
-      - title: String (Ex: "Projeto de Estudos")
-      - created_at: DateTime
-2.  List (Coluna/Lista)
-      - id: UUID ou Integer (Chave Primária)
-      - title: String (Ex: "A Fazer")
-      - board_id: Relacionamento (Chave Estrangeira -> Board)
-      - position: Integer (Para saber a ordem das colunas)
-3.  Card (Cartão/Tarefa)
-      - id: UUID ou Integer (Chave Primária)
-      - title: String (Ex: "Criar base de dados")
-      - description: Text
-      - list_id: Relacionamento (Chave Estrangeira -> List)
-      - position: Integer (Para saber a ordem dos cartões na coluna)
+---
 
-4. Design da API (A perceber os Pedidos/Requests HTTP)
+## 🗄️ Modelo
 
-O FastAPI vai gerar uma documentação automática (Swagger) para poderes testar
-isto. Aqui está como usaremos cada verbo HTTP, focado na entidade Card como
-exemplo:
+A aplicação tem três entidades principais:
 
-  - POST /cards/ (CRIAR)
-      - Uso: Quando clicas em "Adicionar novo cartão".
-      - O que faz: Envia dados (título, list_id) no corpo (Body) do pedido para
-        guardar na base de dados.
-  - GET /boards/{board_id}/cards/ (LER)
-      - Uso: Quando abres a página do quadro.
-      - O que faz: Pede ao servidor para devolver a lista de todos os cartões
-        daquele quadro.
-  - GET /cards/{card_id} (LER APENAS UM)
-      - Uso: Quando clicas num cartão para abrir os detalhes do mesmo.
-  - PUT /cards/{card_id} (ATUALIZAR TUDO)
-      - Uso: Quando editas o cartão inteiro (título, descrição, etc.) e envias o
-        objeto completo para substituir o antigo.
-  - PATCH /cards/{card_id} (ATUALIZAR PARCIALMENTE)
-      - Uso: Muito usado no Trello! Quando arrastas um cartão de "A Fazer" para
-        "Em Progresso", só queres atualizar o list_id dele, sem mexer no resto.
-        O PATCH serve para isto: atualizações parciais.
-  - DELETE /cards/{card_id} (ELIMINAR/APAGAR)
-      - Uso: Quando apagas um cartão.
+```text
+Board
+  │
+  ├── List
+  │     ├── Card
+  │     ├── Card
+  │     └── Card
+  │
+  └── List
+        └── Card
+```
 
-5. Estrutura do Frontend (Nuxt 3)
+### Board
 
-O Nuxt trabalha com encaminhamento (routing) baseado em ficheiros.
+* `id`
+* `title`
+* `created_at`
 
-  - Páginas (Pages):
-      - pages/index.vue: Ecrã inicial a listar todos os teus Quadros (Boards).
-      - pages/board/[id].vue: O ecrã do Kanban em si, onde as listas e os
-        cartões aparecem.
-  - Componentes (Components):
-      - components/BoardCard.vue: O quadradinho no ecrã inicial.
-      - components/KanbanList.vue: A coluna cinzenta.
-      - components/KanbanTask.vue: O cartãozinho branco que se pode arrastar.
+### List
 
-6. Plano de Ação (Como começar a programar)
+* `id`
+* `title`
+* `board_id`
+* `position`
 
-Não tentes fazer tudo de uma vez. Segue este passo a passo:
+### Card
 
-Fase 1: O Alicerce (Base de Dados e Backend)
+* `id`
+* `title`
+* `description`
+* `list_id`
+* `position`
 
-1.  Instala o PostgreSQL e cria uma base de dados vazia chamada minitrello.
-2.  Cria uma pasta para o backend (mkdir backend), inicia um ambiente virtual
-    Python (python -m venv venv) e instala o FastAPI, Uvicorn e SQLAlchemy.
-3.  Cria a ligação com a base de dados.
+---
 
-Fase 2: O CRUD (FastAPI)
+## 🌐 API
 
-1.  Cria os "Models" (as classes em Python que representam as tuas tabelas na
-    base de dados).
-2.  Cria as rotas (Endpoints) para os Boards primeiro (GET, POST, DELETE).
-3.  Testa essas rotas no browser acedendo a http://localhost:8000/docs (O
-    FastAPI gera este ecrã excelente de testes automaticamente).
-4.  Faz o mesmo para as Lists e Cards.
+O projeto pretende utilizar os principais métodos HTTP:
 
-Fase 3: A Interface (Nuxt 3)
+| Método   | Utilização                           |
+| -------- | ------------------------------------ |
+| `GET`    | Obter Boards, Lists e Cards          |
+| `POST`   | Criar recursos                       |
+| `PUT`    | Atualizar um recurso completo        |
+| `PATCH`  | Atualizar apenas parte de um recurso |
+| `DELETE` | Eliminar recursos                    |
 
-1.  Cria o projeto frontend com o Bun: bunx nuxi@latest init frontend.
-2.  Instala o TailwindCSS (vai ajudar-te imenso a desenhar os cartões e as
-    colunas rapidamente).
-3.  Cria a página inicial (estática por agora, sem ligar à API).
-4.  Cria a página do Quadro (desenha as colunas e os cartões falsos (mock data),
-    apenas com HTML/CSS).
+Um dos objetivos principais é perceber a diferença entre **PUT e PATCH**.
 
-Fase 4: A Integração
+Por exemplo, ao mover um Card para outra List:
 
-1.  Usa o useFetch do Nuxt para chamar a tua API FastAPI.
-2.  Substitui os dados falsos do frontend pelos dados que vêm da tua base de
-    dados (GET).
-3.  Põe os botões de "Criar" a funcionar (POST).
-4.  Põe o botão de eliminar a funcionar (DELETE).
-5.  Desafio final: Fazer um cartão mudar de coluna atualizando o list_id do
-    mesmo (PATCH).
+```http
+PATCH /cards/{card_id}
+```
 
+```json
+{
+  "list_id": 2
+}
+```
 
-Com certeza! É fundamental teres o ambiente bem configurado e perceberes como as
-peças encaixam antes de começares a escrever código.
+---
 
-Aqui tens o guia de preparação e a arquitetura do projeto (em PT-PT).
+## 🖥️ Frontend
 
-1. Ambiente de Desenvolvimento (O que tens de instalar no PC)
+Estrutura inicial:
 
-Para que tudo funcione corretamente, precisas de ter estas ferramentas
-instaladas na tua máquina:
+```text
+frontend/
+├── pages/
+│   ├── index.vue
+│   └── board/
+│       └── [id].vue
+│
+└── components/
+    ├── BoardCard.vue
+    ├── KanbanList.vue
+    └── KanbanTask.vue
+```
 
-Essenciais:
+* `index.vue` → lista de Boards
+* `[id].vue` → página do Kanban
+* `BoardCard.vue` → representação de um Board
+* `KanbanList.vue` → coluna do Kanban
+* `KanbanTask.vue` → Card/Tarefa
 
-1.  Editor de Código: Visual Studio Code (VS Code). É o padrão da indústria.
-      - Extensões recomendadas no VS Code: Vue - Official (para o Nuxt), Python,
-        e Thunder Client (para testar APIs dentro do editor, se quiseres).
-2.  Para o Frontend: Bun. Como pediste, vamos usar o Bun em vez do NPM/Node. O
-    Bun é um runtime e gestor de pacotes extremamente rápido.
-      - Nota: Para instalar o Bun no Windows, convém teres o WSL (Windows
-        Subsystem for Linux) instalado, ou usar o comando PowerShell recomendado
-        no site deles. No Mac/Linux é só correr o script do site.
-3.  Para o Backend: Python (versão 3.10 ou superior). Durante a instalação (se
-    estiveres no Windows), não te esqueças de marcar a caixa "Add Python to
-    PATH".
-4.  Para a Base de Dados: PostgreSQL. Podes instalar diretamente no teu sistema
-    operativo. Durante a instalação, ele vai pedir-te para criar uma password
-    para o utilizador postgres. Guarda bem essa password, vais precisar dela
-    para ligar o teu backend!
+---
 
-Ferramenta Extra (Muito recomendada):
+## 🎨 Design
 
-  - DBeaver ou pgAdmin: São programas com interface gráfica para veres a tua
-    base de dados PostgreSQL. Em vez de usares a linha de comandos, podes ver as
-    tuas tabelas, linhas e colunas tal como verias num ficheiro Excel. O DBeaver
-    Community é excelente.
+A interface seguirá uma estética **dark e minimalista**:
 
-2. A Arquitetura do Sistema (Como tudo comunica)
+* `slate-950` → background
+* `slate-900` → Lists
+* `slate-800` → Cards
+* Accent color → ações e elementos importantes
+* Poucas cores e hierarquia visual simples
 
-A tua aplicação vai funcionar em 3 camadas separadas. É assim que elas "falam"
-umas com as outras:
+A inspiração visual será mais próxima de **GitHub Projects** do que de um clone direto do Trello.
 
-1.  O Nuxt (Frontend) pede os dados ao backend (ex: "Dá-me os cartões do
-    Quadro 1").
-2.  O FastAPI (Backend) recebe o pedido, processa, e traduz isso para SQL.
-3.  O PostgreSQL devolve os dados gravados ao FastAPI.
-4.  O FastAPI converte esses dados para JSON e envia para o Nuxt.
-5.  O Nuxt desenha os cartões no teu ecrã.
+---
 
+## 🚀 Roadmap
 
-Direção visual (para não ficar "genérico")
+### 1. Backend
 
-Em vez do clássico fundo cinza-claro + cartões brancos genéricos que a maioria dos clones de Trello têm, sugiro:
+* [X] Configurar PostgreSQL
+* [X] Criar Models com SQLAlchemy
+* [x] Criar CRUD de Boards
+* [X] Criar CRUD de Lists
+* [x] Criar CRUD de Cards
+* [x] Testar API através do Swagger
 
-Paleta: fundo slate-950/quase-preto para o quadro, colunas em slate-900 com contorno subtil, cartões em slate-800 com hover a clarear ligeiramente. Um único accent color por quadro (ex: indigo-500) usado só em pontos de ação (botão "+", badge de contagem) — não espalhado por todo o lado.
-Tipografia: título dos quadros/cartões num peso mais forte (font-semibold), texto secundário (descrição, contagem de cards) mais pequeno e text-slate-400 — cria hierarquia clara sem precisares de cores extra.
-Elemento de assinatura: em vez de uma barra colorida genérica no topo de cada coluna (como o Trello faz), experimenta um contador de cards discreto ao lado do título da lista (À Fazer  3) e uma barra de progresso fininha no rodapé de cada Board na página inicial (ex: "2/5 listas com cards") — dá uma sensação mais "GitHub Projects" (orientado a estado/progresso) do que "Trello" (orientado a cor).
+### 2. Frontend
+
+* [X] Criar projeto Nuxt
+* [ ] Criar interface dos Boards
+* [ ] Criar interface do Kanban
+* [ ] Criar Lists e Cards
+* [X] Adicionar Tailwind CSS
+
+### 3. Integração
+
+* [X] Ligar Nuxt à API
+* [x] Implementar `GET`
+* [x] Implementar `POST`
+* [x] Implementar `PUT`
+* [x] Implementar `PATCH`
+* [x] Implementar `DELETE`
+* [] Implementar Drag & Drop
+
+---
+
+## 🎯 Objetivo
+
+No final, o projeto deverá permitir compreender o fluxo completo:
+
+```text
+Utilizador
+    ↓
+Nuxt / Vue
+    ↓
+HTTP Request
+    ↓
+FastAPI
+    ↓
+SQLAlchemy
+    ↓
+PostgreSQL
+    ↓
+FastAPI
+    ↓
+JSON Response
+    ↓
+Nuxt
+```
+
