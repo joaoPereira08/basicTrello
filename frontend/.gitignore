@@ -1,0 +1,18 @@
+# Dependências do projeto
+node_modules/
+
+# Pastas geradas automaticamente pelo Nuxt
+.nuxt/
+.output/
+dist/
+
+# Variáveis de ambiente locais
+.env
+.env.*
+!.env.example
+
+# Logs 
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
