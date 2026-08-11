@@ -7,13 +7,18 @@ const creating = ref(false)
 async function createBoard() {
   if (!newTitle.value.trim()) return
   creating.value = true
-  await $fetch('http://localhost:8000/boards/', {
-    method: 'POST',
-    body: { title: newTitle.value },
-  })
-  newTitle.value = ''
-  creating.value = false
-  await refresh()
+  try {
+    await $fetch('http://localhost:8000/boards/', {
+      method: 'POST',
+      body: { title: newTitle.value },
+    })
+    newTitle.value = ''
+    await refresh()
+  } catch (err) {
+    console.error('Erro ao criar quadro:', err)
+  } finally {
+    creating.value = false
+  }
 }
 </script>
 
@@ -29,8 +34,10 @@ async function createBoard() {
         @keyup.enter="createBoard"
       />
       <UButton
+        type="button"
         label="Criar"
         icon="i-lucide-plus"
+        class="bg-slate-800 text-white hover:bg-slate-700 border border-slate-700"
         :loading="creating"
         @click="createBoard"
       />
@@ -41,7 +48,7 @@ async function createBoard() {
     </div>
 
     <div v-else class="grid grid-cols-3 gap-4">
-      <BoardCard v-for="board in boards" :key="board.id" :board="board" />
+      <BoardCard v-for="board in boards" :key="board.id" :board="board" @board-renamed="refresh" />
     </div>
   </div>
 </template>

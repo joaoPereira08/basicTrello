@@ -6,7 +6,7 @@ O principal objetivo é perceber como funciona a comunicação entre **Frontend 
 
 ---
 
-## 🛠️ Stack
+## Stack
 
 | Parte    | Tecnologia       |
 | -------- | ---------------- |
@@ -19,7 +19,7 @@ O principal objetivo é perceber como funciona a comunicação entre **Frontend 
 
 ---
 
-## 🏗️ Arquitetura
+##  Arquitetura
 
 ```text
 ┌─────────────┐
@@ -41,7 +41,7 @@ O principal objetivo é perceber como funciona a comunicação entre **Frontend 
 
 ---
 
-## 🗄️ Modelo
+## Modelo
 
 A aplicação tem três entidades principais:
 
@@ -80,7 +80,7 @@ Board
 
 ---
 
-## 🌐 API
+## API
 
 O projeto pretende utilizar os principais métodos HTTP:
 
@@ -108,7 +108,7 @@ PATCH /cards/{card_id}
 
 ---
 
-## 🖥️ Frontend
+## Frontend
 
 Estrutura inicial:
 
@@ -133,7 +133,7 @@ frontend/
 
 ---
 
-## 🎨 Design
+##  Design
 
 A interface seguirá uma estética **dark e minimalista**:
 
@@ -147,7 +147,7 @@ A inspiração visual será mais próxima de **GitHub Projects** do que de um cl
 
 ---
 
-## 🚀 Roadmap
+##  Roadmap
 
 ### 1. Backend
 
@@ -178,7 +178,7 @@ A inspiração visual será mais próxima de **GitHub Projects** do que de um cl
 
 ---
 
-## 🎯 Objetivo
+## Objetivo
 
 No final, o projeto deverá permitir compreender o fluxo completo:
 
