@@ -44,6 +44,18 @@ async function saveTitle() {
     console.error('Erro ao renomear quadro:', err)
   }
 }
+
+async function deleteBoard(event) {
+  event.preventDefault()
+  event.stopPropagation()
+  if (!confirm(`Eliminar o quadro "${props.board.title}"? Esta ação não pode ser desfeita.`)) return
+  try {
+    await $fetch(`http://localhost:8000/boards/${props.board.id}`, { method: 'DELETE' })
+    emit('board-renamed')
+  } catch (err) {
+    console.error('Erro ao eliminar quadro:', err)
+  }
+}
 </script>
 
 <template>
@@ -70,15 +82,24 @@ async function saveTitle() {
           </p>
         </div>
 
-        <UButton
-          type="button"
-          icon="i-lucide-pencil"
-          size="xs"
-          variant="ghost"
-          color="neutral"
-          class="opacity-0 group-hover:opacity-100 transition-opacity"
-          @click="startEdit"
-        />
+        <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <UButton
+            type="button"
+            icon="i-lucide-pencil"
+            size="xs"
+            variant="ghost"
+            color="neutral"
+            @click="startEdit"
+          />
+          <UButton
+            type="button"
+            icon="i-lucide-trash-2"
+            size="xs"
+            variant="ghost"
+            color="error"
+            @click="deleteBoard"
+          />
+        </div>
       </div>
     </div>
   </NuxtLink>

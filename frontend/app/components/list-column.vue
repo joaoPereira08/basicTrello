@@ -1,4 +1,6 @@
 <script setup>
+import draggable from 'vuedraggable'
+
 const props = defineProps({
   listId: { type: Number, required: true },
   title: { type: String, required: true },
@@ -6,6 +8,11 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['task-added', 'list-renamed'])
+
+const localTasks = ref([...props.tasks])
+watch(() => props.tasks, (newTasks) => {
+  localTasks.value = [...newTasks]
+})
 
 const showInput = ref(false)
 const newTaskTitle = ref('')
@@ -48,6 +55,16 @@ async function saveTitle() {
   }
 }
 
+async function deleteList() {
+  if (!confirm(`Eliminar a lista "${props.title}" e todos os seus cartões?`)) return
+  try {
+    await $fetch(`http://localhost:8000/lists/${props.listId}`, { method: 'DELETE' })
+    emit('list-renamed')
+  } catch (err) {
+    console.error('Erro ao eliminar lista:', err)
+  }
+}
+
 async function createTask() {
   if (!newTaskTitle.value.trim()) return
   creating.value = true
@@ -69,6 +86,32 @@ async function createTask() {
     creating.value = false
   }
 }
+
+async function handleDragChange(evt) {
+  if (evt.added) {
+    const { element, newIndex } = evt.added
+    try {
+      await $fetch(`http://localhost:8000/cards/${element.id}`, {
+        method: 'PATCH',
+        body: { list_id: props.listId, position: newIndex },
+      })
+      emit('list-renamed')
+    } catch (err) {
+      console.error('Erro ao mover cartão:', err)
+      emit('list-renamed')
+    }
+  } else if (evt.moved) {
+    const { element, newIndex } = evt.moved
+    try {
+      await $fetch(`http://localhost:8000/cards/${element.id}`, {
+        method: 'PATCH',
+        body: { position: newIndex },
+      })
+    } catch (err) {
+      console.error('Erro ao reordenar cartão:', err)
+    }
+  }
+}
 </script>
 
 <template>
@@ -86,16 +129,34 @@ async function createTask() {
       </div>
     </div>
 
-    <div v-else class="flex items-center justify-between mb-3">
+    <div v-else class="group flex items-center justify-between mb-3">
       <button class="font-medium text-sm text-gray-100 text-left flex-1 hover:text-white" @click="startEditTitle">
         {{ title }}
       </button>
-      <span class="text-xs text-gray-500">{{ tasks.length }}</span>
+      <span class="text-xs text-gray-500 mr-1">{{ tasks.length }}</span>
+      <UButton
+        type="button"
+        icon="i-lucide-trash-2"
+        size="xs"
+        variant="ghost"
+        color="error"
+        class="opacity-0 group-hover:opacity-100 transition-opacity"
+        @click="deleteList"
+      />
     </div>
 
-    <div class="flex flex-col gap-2">
-      <TaskCard v-for="task in tasks" :key="task.id" :task="task" @task-renamed="emit('list-renamed')" />
-    </div>
+    <draggable
+      v-model="localTasks"
+      :item-key="(task) => task.id"
+      group="cards"
+      class="flex flex-col gap-2 min-h-[8px]"
+      ghost-class="opacity-40"
+      @change="handleDragChange"
+    >
+      <template #item="{ element }">
+        <TaskCard :task="element" @task-renamed="emit('list-renamed')" />
+      </template>
+    </draggable>
 
     <div v-if="showInput" class="mt-2 flex flex-col gap-2">
       <UInput

@@ -1,4 +1,5 @@
 <script setup>
+
 const route = useRoute()
 const boardId = route.params.id
 
@@ -55,6 +56,16 @@ async function createList() {
     creatingList.value = false
   }
 }
+
+async function deleteBoard() {
+  if (!confirm(`Eliminar o quadro "${board.value?.title}"? Esta ação não pode ser desfeita.`)) return
+  try {
+    await $fetch(`http://localhost:8000/boards/${boardId}`, { method: 'DELETE' })
+    await navigateTo('/')
+  } catch (err) {
+    console.error('Erro ao eliminar board:', err)
+  }
+}
 </script>
 
 <template>
@@ -89,6 +100,14 @@ async function createList() {
         color="neutral"
         @click="startEditBoardTitle"
       />
+      <UButton
+        type="button"
+        icon="i-lucide-trash-2"
+        size="sm"
+        variant="ghost"
+        color="error"
+        @click="deleteBoard"
+      />
     </div>
 
     <div class="flex gap-3 items-start">
@@ -115,7 +134,6 @@ async function createList() {
           icon="i-lucide-plus"
           variant="soft"
           size="sm"
-          class="bg-slate-800 text-white hover:bg-slate-700 border border-slate-700"
           :loading="creatingList"
           @click="createList"
         />

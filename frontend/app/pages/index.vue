@@ -37,7 +37,6 @@ async function createBoard() {
         type="button"
         label="Criar"
         icon="i-lucide-plus"
-        class="bg-slate-800 text-white hover:bg-slate-700 border border-slate-700"
         :loading="creating"
         @click="createBoard"
       />
