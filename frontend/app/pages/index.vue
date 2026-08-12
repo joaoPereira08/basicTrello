@@ -24,7 +24,7 @@ async function createBoard() {
 
 <template>
   <div class="p-8 max-w-4xl mx-auto">
-    <h1 class="text-2xl font-semibold text-gray-100 mb-6">Os meus Quadros</h1>
+    <h1 class="text-2xl font-semibold text-gray-100 mb-6">Boards</h1>
 
     <div class="flex gap-2 mb-6">
       <UInput

@@ -7,7 +7,9 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@nuxt/ui": "4.10.0",
@@ -36,6 +38,11 @@
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
-    "@iconify-json/lucide": "^1.2.123"
+    "@iconify-json/lucide": "^1.2.123",
+    "@types/node": "^26.2.0",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "@vue/test-utils": "^2.4.6",
+    "jsdom": "^25.0.1",
+    "vitest": "^3.2.4"
   }
 }
