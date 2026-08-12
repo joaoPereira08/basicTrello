@@ -1,4 +1,4 @@
-# 📝 Basic Trello
+# Basic Trello
 
 Uma aplicação web estilo **Kanban/Trello**, desenvolvida como projeto de aprendizagem para explorar **Bun, Nuxt 3, FastAPI, SQLAlchemy e PostgreSQL**.
 
@@ -120,30 +120,25 @@ frontend/
 │       └── [id].vue
 │
 └── components/
-    ├── BoardCard.vue
-    ├── KanbanList.vue
-    └── KanbanTask.vue
+    ├── board-card.vue
+    ├── list-column.vue
+    └── task-card.vue
 ```
 
 * `index.vue` → lista de Boards
-* `[id].vue` → página do Kanban
-* `BoardCard.vue` → representação de um Board
-* `KanbanList.vue` → coluna do Kanban
-* `KanbanTask.vue` → Card/Tarefa
+* `[id].vue` → página da Board
+* `board-card.vue` → representação de um Board
+* `list-column.vue` → coluna de uma Lista
+* `task-card.vue` → Card/Tarefa
 
 ---
 
 ##  Design
 
-A interface seguirá uma estética **dark e minimalista**:
+A interface seguirá uma estética **minimalista**:
 
-* `slate-950` → background
-* `slate-900` → Lists
-* `slate-800` → Cards
-* Accent color → ações e elementos importantes
-* Poucas cores e hierarquia visual simples
 
-A inspiração visual será mais próxima de **GitHub Projects** do que de um clone direto do Trello.
+A inspiração visual será mais próxima de **GitHub Projects e Trello**.
 
 ---
 
@@ -156,14 +151,13 @@ A inspiração visual será mais próxima de **GitHub Projects** do que de um cl
 * [x] Criar CRUD de Boards
 * [X] Criar CRUD de Lists
 * [x] Criar CRUD de Cards
-* [x] Testar API através do Swagger
+* [x] Testes
 
 ### 2. Frontend
 
 * [X] Criar projeto Nuxt
-* [ ] Criar interface dos Boards
-* [ ] Criar interface do Kanban
-* [ ] Criar Lists e Cards
+* [x] Criar interface das Boards
+* [x] Criar Lists e Cards
 * [X] Adicionar Tailwind CSS
 
 ### 3. Integração
@@ -174,7 +168,7 @@ A inspiração visual será mais próxima de **GitHub Projects** do que de um cl
 * [x] Implementar `PUT`
 * [x] Implementar `PATCH`
 * [x] Implementar `DELETE`
-* [] Implementar Drag & Drop
+* [x] Implementar Drag & Drop
 
 ---
 
