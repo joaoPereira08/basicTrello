@@ -15,15 +15,18 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="trello clone API")
 
+allowed_origins = [
+    "http://localhost:3000",
+    os.getenv("FRONTEND_URL", ""),
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
-    allow_origin_regex=r"https://.*\.basictrello\.pages\.dev",
+    allow_origins=[o for o in allowed_origins if o],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 
 
