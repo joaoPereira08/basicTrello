@@ -1,5 +1,7 @@
 <script setup>
-const { data: boards, refresh } = await useFetch('http://localhost:8000/boards/')
+const apiBase = useRuntimeConfig().public.apiBase
+
+const { data: boards, refresh } = await useFetch(`${apiBase}/boards/`)
 
 const newTitle = ref('')
 const creating = ref(false)
@@ -8,7 +10,7 @@ async function createBoard() {
   if (!newTitle.value.trim()) return
   creating.value = true
   try {
-    await $fetch('http://localhost:8000/boards/', {
+    await $fetch(`${apiBase}/boards/`, {
       method: 'POST',
       body: { title: newTitle.value },
     })

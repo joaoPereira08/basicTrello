@@ -1,6 +1,8 @@
 <script setup>
 import draggable from 'vuedraggable'
 
+const apiBase = useRuntimeConfig().public.apiBase
+
 const props = defineProps({
   listId: { type: Number, required: true },
   title: { type: String, required: true },
@@ -44,7 +46,7 @@ async function saveTitle() {
   }
 
   try {
-    await $fetch(`http://localhost:8000/lists/${props.listId}`, {
+    await $fetch(`${apiBase}/lists/${props.listId}`, {
       method: 'PATCH',
       body: { title },
     })
@@ -58,7 +60,7 @@ async function saveTitle() {
 async function deleteList() {
   if (!confirm(`Eliminar a lista "${props.title}" e todos os seus cartões?`)) return
   try {
-    await $fetch(`http://localhost:8000/lists/${props.listId}`, { method: 'DELETE' })
+    await $fetch(`${apiBase}/lists/${props.listId}`, { method: 'DELETE' })
     emit('list-renamed')
   } catch (err) {
     console.error('Erro ao eliminar lista:', err)
@@ -69,7 +71,7 @@ async function createTask() {
   if (!newTaskTitle.value.trim()) return
   creating.value = true
   try {
-    await $fetch('http://localhost:8000/cards/', {
+    await $fetch(`${apiBase}/cards/`, {
       method: 'POST',
       body: {
         title: newTaskTitle.value,
@@ -91,7 +93,7 @@ async function handleDragChange(evt) {
   if (evt.added) {
     const { element, newIndex } = evt.added
     try {
-      await $fetch(`http://localhost:8000/cards/${element.id}`, {
+      await $fetch(`${apiBase}/cards/${element.id}`, {
         method: 'PATCH',
         body: { list_id: props.listId, position: newIndex },
       })
@@ -103,7 +105,7 @@ async function handleDragChange(evt) {
   } else if (evt.moved) {
     const { element, newIndex } = evt.moved
     try {
-      await $fetch(`http://localhost:8000/cards/${element.id}`, {
+      await $fetch(`${apiBase}/cards/${element.id}`, {
         method: 'PATCH',
         body: { position: newIndex },
       })

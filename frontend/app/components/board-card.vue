@@ -1,4 +1,6 @@
 <script setup>
+const apiBase = useRuntimeConfig().public.apiBase
+
 const props = defineProps({
   board: { type: Object, required: true },
 })
@@ -34,7 +36,7 @@ async function saveTitle() {
   }
 
   try {
-    await $fetch(`http://localhost:8000/boards/${props.board.id}`, {
+    await $fetch(`${apiBase}/boards/${props.board.id}`, {
       method: 'PATCH',
       body: { title },
     })
@@ -50,7 +52,7 @@ async function deleteBoard(event) {
   event.stopPropagation()
   if (!confirm(`Eliminar o quadro "${props.board.title}"? Esta ação não pode ser desfeita.`)) return
   try {
-    await $fetch(`http://localhost:8000/boards/${props.board.id}`, { method: 'DELETE' })
+    await $fetch(`${apiBase}/boards/${props.board.id}`, { method: 'DELETE' })
     emit('board-renamed')
   } catch (err) {
     console.error('Erro ao eliminar quadro:', err)

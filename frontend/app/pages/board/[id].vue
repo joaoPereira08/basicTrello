@@ -1,9 +1,10 @@
 <script setup>
+const apiBase = useRuntimeConfig().public.apiBase
 
 const route = useRoute()
 const boardId = route.params.id
 
-const { data: board, refresh } = await useFetch(`http://localhost:8000/boards/${boardId}`)
+const { data: board, refresh } = await useFetch(`${apiBase}/boards/${boardId}`)
 
 const newListTitle = ref('')
 const creatingList = ref(false)
@@ -29,7 +30,7 @@ async function saveBoardTitle() {
   }
 
   try {
-    await $fetch(`http://localhost:8000/boards/${boardId}`, {
+    await $fetch(`${apiBase}/boards/${boardId}`, {
       method: 'PATCH',
       body: { title },
     })
@@ -44,7 +45,7 @@ async function createList() {
   if (!newListTitle.value.trim()) return
   creatingList.value = true
   try {
-    await $fetch('http://localhost:8000/lists/', {
+    await $fetch(`${apiBase}/lists/`, {
       method: 'POST',
       body: { title: newListTitle.value, board_id: Number(boardId), position: board.value?.lists?.length ?? 0 },
     })
@@ -60,7 +61,7 @@ async function createList() {
 async function deleteBoard() {
   if (!confirm(`Eliminar o quadro "${board.value?.title}"? Esta ação não pode ser desfeita.`)) return
   try {
-    await $fetch(`http://localhost:8000/boards/${boardId}`, { method: 'DELETE' })
+    await $fetch(`${apiBase}/boards/${boardId}`, { method: 'DELETE' })
     await navigateTo('/')
   } catch (err) {
     console.error('Erro ao eliminar board:', err)

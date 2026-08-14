@@ -1,4 +1,5 @@
 from typing import List as PyList
+import os
 
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -14,9 +15,14 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="trello clone API")
 
+allowed_origins = [
+    "http://localhost:3000",
+    os.getenv("FRONTEND_URL", ""),
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[o for o in allowed_origins if o],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

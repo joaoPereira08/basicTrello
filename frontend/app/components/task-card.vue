@@ -1,4 +1,6 @@
 <script setup>
+const apiBase = useRuntimeConfig().public.apiBase
+
 const props = defineProps({
   task: { type: Object, required: true },
 })
@@ -36,7 +38,7 @@ async function saveTitle() {
   }
 
   try {
-    await $fetch(`http://localhost:8000/cards/${props.task.id}`, {
+    await $fetch(`${apiBase}/cards/${props.task.id}`, {
       method: 'PATCH',
       body: { title },
     })
@@ -56,7 +58,7 @@ function openDescription() {
 async function saveDescription() {
   savingDescription.value = true
   try {
-    await $fetch(`http://localhost:8000/cards/${props.task.id}`, {
+    await $fetch(`${apiBase}/cards/${props.task.id}`, {
       method: 'PATCH',
       body: { description: draftDescription.value },
     })
@@ -72,7 +74,7 @@ async function saveDescription() {
 async function deleteTask() {
   if (!confirm(`Eliminar o cartão "${props.task.title}"?`)) return
   try {
-    await $fetch(`http://localhost:8000/cards/${props.task.id}`, { method: 'DELETE' })
+    await $fetch(`${apiBase}/cards/${props.task.id}`, { method: 'DELETE' })
     descOpen.value = false
     emit('task-renamed')
   } catch (err) {
