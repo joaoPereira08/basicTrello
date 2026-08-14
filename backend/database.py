@@ -9,7 +9,7 @@ load_dotenv()
 # (ajusta o utilizador/password/nome da BD conforme o que definiste no PostgreSQL).
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql://postgres:a_tua_password@localhost:5432/minitrello",
+    "postgresql://postgres:a_tua_password@localhost:5432/minitrello"
 )
 
 engine = create_engine(DATABASE_URL)
