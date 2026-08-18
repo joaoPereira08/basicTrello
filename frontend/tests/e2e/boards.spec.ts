@@ -1,35 +1,40 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, uniqueTitle } from './fixtures'
 
-const boardTitle = `E2E Board ${Date.now()}`
+test.describe('Boards', () => {
+  test('Criar um quadro', async ({ page }) => {
 
-test.describe('Quadros', () => {
-  test('cria um quadro e aparece na lista', async ({ page }) => {
     await page.goto('/')
 
-    await page.getByPlaceholder('Nome do novo quadro').fill(boardTitle)
+
+    const title = uniqueTitle('Board Criar')
+    await page.getByPlaceholder('Nome do novo quadro').fill(title)
     await page.getByRole('button', { name: 'Criar' }).click()
 
-    await expect(page.getByText(boardTitle)).toBeVisible()
+    await expect(page.getByText(title)).toBeVisible()
   })
 
-  test('abre um quadro ao clicar nele', async ({ page }) => {
+  test(' Abrir um quadro', async ({ page, createBoardViaApi }) => {
+
+    const board = await createBoardViaApi(uniqueTitle('Board Abrir'))
     await page.goto('/')
 
-    await page.getByText(boardTitle).click()
+    await page.getByText(board.title).click()
 
-    await expect(page).toHaveURL(/\/board\/\d+/)
-    await expect(page.getByRole('heading', { name: boardTitle })).toBeVisible()
+    await expect(page).toHaveURL(`/board/${board.id}`)
+    await expect(page.getByRole('heading', { name: board.title })).toBeVisible()
   })
 
-  test('elimina o quadro', async ({ page }) => {
+  test('Eliminar um quadro', async ({ page, createBoardViaApi }) => {
+
+    const board = await createBoardViaApi(uniqueTitle('Board Eliminar'))
     await page.goto('/')
 
-    const boardCard = page.locator('a', { hasText: boardTitle })
+    const boardCard = page.locator('a', { hasText: board.title })
     await boardCard.hover()
 
     page.once('dialog', (dialog) => dialog.accept())
     await boardCard.getByRole('button').last().click()
 
-    await expect(page.getByText(boardTitle)).not.toBeVisible()
+    await expect(page.getByText(board.title)).not.toBeVisible()
   })
 })

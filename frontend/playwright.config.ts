@@ -5,8 +5,17 @@ loadEnv()
 
 export default defineConfig({
   testDir: './tests/e2e',
+  globalSetup: './tests/e2e/global-setup.ts',
+
+  workers: 1,
   fullyParallel: false,
   retries: 0,
+
+  timeout: 60_000,
+  expect: {
+    timeout: 10_000,
+  },
+
   reporter: 'html',
 
   use: {
