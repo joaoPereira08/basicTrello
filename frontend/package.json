@@ -39,9 +39,11 @@
   },
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.123",
+    "@playwright/test": "^1.62.1",
     "@types/node": "^26.2.0",
     "@vitejs/plugin-vue": "^6.0.8",
     "@vue/test-utils": "^2.4.6",
+    "dotenv": "^17.4.2",
     "jsdom": "^25.0.1",
     "vitest": "^3.2.4"
   }

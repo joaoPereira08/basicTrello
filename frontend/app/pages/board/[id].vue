@@ -4,7 +4,7 @@ const apiBase = useRuntimeConfig().public.apiBase
 const route = useRoute()
 const boardId = route.params.id
 
-const { data: board, refresh } = await useFetch(`${apiBase}/boards/${boardId}`)
+const { data: board, refresh } = await useFetch(`${apiBase}/boards/${boardId}`, { server: false })
 
 const newListTitle = ref('')
 const creatingList = ref(false)
