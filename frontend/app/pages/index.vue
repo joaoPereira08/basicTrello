@@ -1,7 +1,7 @@
 <script setup>
 const apiBase = useRuntimeConfig().public.apiBase
 
-const { data: boards, refresh } = await useFetch(`${apiBase}/boards/`)
+const { data: boards, refresh } = await useFetch(`${apiBase}/boards/`, { server: false })
 
 const newTitle = ref('')
 const creating = ref(false)
